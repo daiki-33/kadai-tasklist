@@ -50,8 +50,12 @@ class TasksController extends Controller
      // postでtasks/にアクセスされた場合の「新規登録処理」
     public function store(Request $request)
     {
+        $request->validate([
+            'status' => 'required|max:10',
+        ]);
         // タスクを作成
         $task = new Task;
+        $task->status = $request->status;    // 追加
         $task->content = $request->content;
         $task->save();
 
@@ -72,7 +76,7 @@ class TasksController extends Controller
         $task = Task::findOrFail($id);
 
         // メッセージ詳細ビューでそれを表示
-        return view('task.show', [
+        return view('tasks.show', [
             'task' => $task,
         ]);
     }
@@ -108,6 +112,7 @@ class TasksController extends Controller
          // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
         // タスクを更新
+        $task->status = $request->status;    // 追加
         $task->content = $request->content;
         $task->save();
 
